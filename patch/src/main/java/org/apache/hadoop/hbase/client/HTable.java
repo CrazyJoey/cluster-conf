@@ -18,15 +18,24 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Created by jh4j on 2016/9/8.
  */
 public class HTable implements HTableInterface, RegionLocator {
 
+    private final TableName tableName;
+    private final boolean cleanupPoolOnClose;
+    private final boolean cleanupConnectionOnClose;
+    protected ClusterConnection connection;
 
+    public HTable(Configuration conf, final TableName tableName) throws IOException {
+        this.tableName = tableName;
+        this.cleanupPoolOnClose = this.cleanupConnectionOnClose = true;
 
-
+        this.connection = ConnectionManager.getConnectionInternal(conf);
+    }
 
 
 
@@ -95,9 +104,12 @@ public class HTable implements HTableInterface, RegionLocator {
         return new boolean[0];
     }
 
+    protected AsyncProcess multiAp;
+    private ExecutorService pool;  //For Multi & Scan
+
     @Override
     public void batch(List<? extends Row> actions, Object[] results) throws IOException, InterruptedException {
-
+        AsyncProcess.AsyncRequestFuture = multiAp.submitAll(pool, tableName, actions, null, results);
     }
 
     @Override
