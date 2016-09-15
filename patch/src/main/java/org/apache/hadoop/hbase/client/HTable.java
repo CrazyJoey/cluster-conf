@@ -8,7 +8,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HRegionLocation;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.Batch;
 import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.ipc.CoprocessorRpcChannel;
@@ -109,7 +108,7 @@ public class HTable implements HTableInterface, RegionLocator {
 
     @Override
     public void batch(List<? extends Row> actions, Object[] results) throws IOException, InterruptedException {
-        AsyncProcess.AsyncRequestFuture = multiAp.submitAll(pool, tableName, actions, null, results);
+        AsyncProcess.AsyncRequestFuture ars = multiAp.submitAll(pool, tableName, actions, null, results);
     }
 
     @Override
